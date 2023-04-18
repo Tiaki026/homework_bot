@@ -17,7 +17,6 @@ TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 RETRY_PERIOD = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
-ONE_MONTH: int = 2629743
 HOMEWORK_VERDICTS = {
     'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
     'reviewing': 'Работа взята на проверку ревьюером.',
@@ -112,7 +111,7 @@ def main():
     """Основная логика работы бота."""
     check_tokens()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    timestamp = int(time.time()) - ONE_MONTH
+    timestamp = int(time.time())
     last_message = ''
     while True:
         try:
