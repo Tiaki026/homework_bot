@@ -22,22 +22,18 @@ HOMEWORK_VERDICTS = {
     'reviewing': 'Работа взята на проверку ревьюером.',
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
-TOKENS = ('PRACTICUM_TOKEN', 'TELEGRAM_TOKEN', 'TELEGRAM_CHAT_ID')
 
 
 def check_tokens():
     """Проверка токенов."""
-    if not all(globals()[token] for token in TOKENS):
-        missing_tokens = [
-            token for token in TOKENS if globals()[token] is None
-        ]
-        error_msg = f"Неверный токен: {', '.join(missing_tokens)}"
-        logging.critical(error_msg)
-        raise ValueError(error_msg)
+    if PRACTICUM_TOKEN and TELEGRAM_CHAT_ID and TELEGRAM_TOKEN:
+        logging.debug('Все токены в порядке')
+        return True
 
 
 def send_message(bot, message):
     """Отправка сообщений."""
+    logging.info('Начало отправки сообщения')
     try:
         bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
         logging.debug('Сообщение успешно отправлено')
@@ -49,6 +45,7 @@ def send_message(bot, message):
 
 def get_api_answer(timestamp):
     """Запрос к API."""
+    logging.info('Начало запроса к API')
     try:
         response = requests.get(
             url=ENDPOINT,
@@ -109,21 +106,24 @@ def parse_status(homework):
 
 def main():
     """Основная логика работы бота."""
-    check_tokens()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    timestamp = int(time.time())
+    timestamp = int(time.time()) - 2629743
     last_message = ''
+    if not check_tokens():
+        logging.critical('Ошибка токена')
+        sys.exit()
     while True:
         try:
             response = get_api_answer(timestamp)
             homeworks = check_response(response)
             if homeworks:
                 message = parse_status(homeworks[0])
-                send_message(bot, message)
-                last_message = message
+                if last_message != message:
+                    send_message(bot, message)
+                    last_message = message
             timestamp = response.get('current_date', timestamp)
         except Exception as error:
-            message = f'Program failed: {error}'
+            message = f'Ошибка работы программы: {error}'
             logging.exception(message)
             if last_message != message:
                 send_message(bot, message)
