@@ -107,7 +107,7 @@ def parse_status(homework):
 def main():
     """Основная логика работы бота."""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    timestamp = int(time.time()) - 2629743
+    timestamp = int(time.time())
     last_message = ''
     if not check_tokens():
         logging.critical('Ошибка токена')
