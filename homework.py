@@ -24,12 +24,12 @@ HOMEWORK_VERDICTS = {
 }
 
 
-def check_tokens():
+def check_tokens() -> str:
     """Проверка токенов."""
     return PRACTICUM_TOKEN and TELEGRAM_CHAT_ID and TELEGRAM_TOKEN
 
 
-def send_message(bot, message):
+def send_message(bot, message) -> None:
     """Отправка сообщений."""
     logging.info('Начало отправки сообщения')
     try:
@@ -41,7 +41,7 @@ def send_message(bot, message):
         )
 
 
-def get_api_answer(timestamp):
+def get_api_answer(timestamp) -> any:
     """Запрос к API."""
     logging.info('Начало запроса к API')
     try:
@@ -66,7 +66,7 @@ def get_api_answer(timestamp):
     return response_json
 
 
-def check_response(response):
+def check_response(response) -> list:
     """Проверка ответа."""
     if not isinstance(response, dict):
         raise TypeError(
@@ -82,7 +82,7 @@ def check_response(response):
     return homeworks
 
 
-def parse_status(homework):
+def parse_status(homework) -> str:
     """Проверка статуса работы."""
     if 'homework_name' not in homework:
         raise KeyError(
