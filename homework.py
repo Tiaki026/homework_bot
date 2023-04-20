@@ -26,9 +26,7 @@ HOMEWORK_VERDICTS = {
 
 def check_tokens():
     """Проверка токенов."""
-    if PRACTICUM_TOKEN and TELEGRAM_CHAT_ID and TELEGRAM_TOKEN:
-        logging.debug('Все токены в порядке')
-        return True
+    return PRACTICUM_TOKEN and TELEGRAM_CHAT_ID and TELEGRAM_TOKEN
 
 
 def send_message(bot, message):
